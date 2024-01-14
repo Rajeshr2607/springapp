@@ -1,30 +1,44 @@
 package springtech.tech.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import springtech.tech.UsersServices.User;
+import springtech.tech.UsersServices.Userservices;
+import springtech.tech.model.Fixtures;
 
 @RestController
 public class UserController {
+	  
+	@Autowired
+	private Userservices userservice;
 	
-	
+
 	@GetMapping("getFixture")
 	public String getData() {
 		
+		try {
 	   User u= new User();
+
+	   String s=userservice.fetchData();
+	   ObjectMapper obj=new ObjectMapper();
+	   Fixtures f=  obj.readValue(s, Fixtures.class);
+	   return  f.toString() ;
 	   
-	   RestClient  restClient = RestClient.builder()
-             .baseUrl("https://dev-sigma2.s3.eu-west-2.amazonaws.com/sigma/json/sr_match_42134499.json?_=1705210596231")
-             .build();
-	    
-//	    restClient.toString();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	   
 	   
+	   return "success";
 	   
 		
-		return restClient.toString();
+		
 	}
 
 }
